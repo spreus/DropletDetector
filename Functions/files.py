@@ -72,7 +72,9 @@ def extract_info_from_filename(filename: str):
 
 
 def write_to_excel(droplets: list, output_excel_file: str) -> None:
-    df = pd.DataFrame([vars(dto) for dto in droplets])
+    sorted_droplets = sorted(droplets, key=lambda x: x.timestamp)
+
+    df = pd.DataFrame([vars(dto) for dto in sorted_droplets])
     df.to_excel(output_excel_file, index=False)
     print(f"Results saved to {output_excel_file}")
     add_hyperlinks_to_column(output_excel_file, "Sheet1", "A")
