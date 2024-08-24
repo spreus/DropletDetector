@@ -1,4 +1,6 @@
 import os
+from datetime import datetime
+
 import cv2
 
 from Dtos.DropletDto import DropletDto
@@ -22,13 +24,20 @@ def process_images_in_directory(directory_path: str, roi: RoiDto, output_directo
                         image_filepath=os.path.basename(output_path),
                         volume=volume,
                         timestamp=timestamp,
+                        seconds=0,
                         center=droplet['center'],
                         radius=droplet['radius'],
                         area=droplet['area']
                     )
                     data.append(droplet_dto)
 
-    return data
+    # Sort
+    sorted_droplets = sorted(data, key=lambda x: x.timestamp)
+    t0 = sorted_droplets[0].timestamp
+    for droplet in sorted_droplets:
+        droplet.seconds = difference_in_seconds(t0, droplet.timestamp)
+
+    return sorted_droplets
 
 
 def detect_droplets(image_path: str, roi: RoiDto, output_dir: str):
@@ -104,3 +113,17 @@ def select_roi(image_path: str) -> RoiDto:
         w=roi[2],
         h=roi[3]
     )
+
+
+def difference_in_seconds(timestamp1, timestamp2):
+    # Define the format of the timestamp
+    fmt = '%Y-%m-%d %H:%M:%S%f'
+
+    # Convert the string timestamps to datetime objects
+    time1 = datetime.strptime(timestamp1, fmt)
+    time2 = datetime.strptime(timestamp2, fmt)
+
+    # Calculate the difference in seconds
+    difference = abs((time1 - time2).total_seconds())
+
+    return difference

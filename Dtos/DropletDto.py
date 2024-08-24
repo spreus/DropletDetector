@@ -1,8 +1,9 @@
 class DropletDto:
-    def __init__(self, image_filepath, volume, timestamp, center, radius, area):
+    def __init__(self, image_filepath, volume, timestamp, seconds, center, radius, area):
         self.image_filepath = image_filepath
         self.volume = volume
         self.timestamp = timestamp
+        self.seconds = seconds
         self.center = center
         self.radius = radius
         self.area = area
