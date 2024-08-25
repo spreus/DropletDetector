@@ -44,12 +44,6 @@ def detect_droplets(image_path: str, roi: RoiDto, output_dir: str):
     # Load the image
     image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 
-    # Crop the image to the ROI
-    # cropped_image = image[roi.y:roi.y + roi.h, roi.x:roi.x + roi.w]
-
-    # Convert to grayscale and threshold
-    # gray = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2GRAY)
-
     # Apply a binary threshold to the image
     _, binary = cv2.threshold(image, 200, 255, cv2.THRESH_BINARY_INV)
 
@@ -80,6 +74,13 @@ def detect_droplets(image_path: str, roi: RoiDto, output_dir: str):
 
             # Optionally, draw the center of the droplet
             cv2.circle(image, center, 2, (0, 0, 255), -1)  # Red color, filled circle
+
+    if len(droplets) == 0:
+        droplets.append({
+            'center': (0, 0),
+            'radius': 0,
+            'area': 0
+        })
 
     # Save the result image
     image_name_res = os.path.basename(image_path)
